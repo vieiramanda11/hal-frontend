@@ -1,5 +1,6 @@
 import React from 'react';
 import { ApolloClient, InMemoryCache, ApolloProvider } from '@apollo/client';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Pools from './components/Pools';
 
 const client = new ApolloClient({
@@ -10,8 +11,11 @@ const client = new ApolloClient({
 function App() {
   return (
     <ApolloProvider client={client}>
-      <h1>HAL FRONTEND ASSINGMENT!</h1>
-      <Pools />
+      <BrowserRouter>
+        <Routes>
+          <Route path='/pools' element={<Pools />} />
+        </Routes>
+      </BrowserRouter>
     </ApolloProvider>
   );
 }
