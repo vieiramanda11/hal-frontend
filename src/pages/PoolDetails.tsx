@@ -2,7 +2,7 @@ import { GET_POOL_DETAILS } from '../graphql';
 import { useQuery } from '@apollo/client';
 import { useParams } from 'react-router-dom';
 
-const PoolDetails = () => {
+export const PoolDetails = () => {
   const params = useParams();
 
   const { loading, error, data } = useQuery(GET_POOL_DETAILS, {
@@ -20,5 +20,3 @@ const PoolDetails = () => {
     </div>
   );
 };
-
-export default PoolDetails;

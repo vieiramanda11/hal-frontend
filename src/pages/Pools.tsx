@@ -7,7 +7,7 @@ interface IPool {
   txCount: string;
 }
 
-const Pools = () => {
+export const Pools = () => {
   const { loading, error, data } = useQuery(GET_POOLS);
 
   if (loading) return <p>Loading...</p>;
@@ -22,5 +22,3 @@ const Pools = () => {
     </div>
   ));
 };
-
-export default Pools;
