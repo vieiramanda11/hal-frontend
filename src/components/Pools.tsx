@@ -1,6 +1,6 @@
-import React from 'react';
 import { GET_POOLS } from '../graphql';
 import { useQuery } from '@apollo/client';
+import { Link } from 'react-router-dom';
 
 interface IPool {
   id: string;
@@ -15,6 +15,7 @@ const Pools = () => {
 
   return data.pools.map(({ id, txCount }: IPool) => (
     <div key={id}>
+      <Link to={`${id}`}>Pool details</Link>
       <p>
         {id}: {txCount}
       </p>
