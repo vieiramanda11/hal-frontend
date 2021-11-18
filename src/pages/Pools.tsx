@@ -1,7 +1,10 @@
+import React, { useState } from 'react';
 import { GET_POOLS } from '../graphql';
 import { useQuery } from '@apollo/client';
 import styled from 'styled-components';
-import { Typography, Table } from '../components/';
+import { Typography, Table, Pagination } from '../components/';
+
+let PageSize = 10;
 
 const Container = styled.div`
   padding: 20px 50px;
@@ -15,10 +18,20 @@ const PoolsContainer = styled.div`
 `;
 
 export const Pools = () => {
-  const { loading, error, data } = useQuery(GET_POOLS);
+  const [currentPage, setCurrentPage] = useState(1);
+  const { loading, data, error } = useQuery(GET_POOLS);
 
   if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :</p>;
+  if (error) return <p>Error :{error}</p>;
+
+  const currentTableData = () => {
+    const firstPageIndex = (currentPage - 1) * PageSize;
+    const lastPageIndex = firstPageIndex + PageSize;
+
+    if (data.pools.length !== 0) {
+      return data.pools.slice(firstPageIndex, lastPageIndex);
+    }
+  };
 
   return (
     <Container>
@@ -30,8 +43,14 @@ export const Pools = () => {
 
       <PoolsContainer>
         <Table
-          data={data.pools}
+          data={currentTableData()}
           headerTitles={['Pools', 'TXCOUNT', 'TVL', 'VOLUME']}
+        />
+        <Pagination
+          currentPage={currentPage}
+          totalCount={data.pools.length}
+          pageSize={PageSize}
+          onPageChange={(page: number) => setCurrentPage(page)}
         />
       </PoolsContainer>
     </Container>
