@@ -3,7 +3,7 @@ import styled from 'styled-components';
 import { Typography } from '.';
 
 interface IFilter {
-  handleSelect: (event: any) => void;
+  handleSelect: (event: { target: { value: string } }) => void;
 }
 
 const Container = styled.div`

@@ -62,7 +62,7 @@ export const PoolDetails = () => {
     }
   };
 
-  const handleSelect = (event: any) => {
+  const handleSelect = (event: { target: { value: string } }) => {
     setFilterDataType(event.target.value);
   };
 

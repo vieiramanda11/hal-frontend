@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { Typography } from '.';
 
 interface IPagination {
-  onPageChange: any;
+  onPageChange: Function;
   totalCount: number;
   siblingCount?: number;
   currentPage: number;

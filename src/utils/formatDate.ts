@@ -1,4 +1,4 @@
-export const formatDate = (date: any) => {
+export const formatDate = (date: number) => {
   let seconds = Math.floor((Date.now() - date * 1000) / 1000);
   let unit = 'second';
   let direction = 'ago';

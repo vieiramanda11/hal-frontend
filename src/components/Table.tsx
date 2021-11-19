@@ -26,7 +26,7 @@ interface ITransactions {
   id: string;
   txType: string;
   amountUSD: string;
-  timestamp: any;
+  timestamp: number;
 }
 
 interface ITr {
