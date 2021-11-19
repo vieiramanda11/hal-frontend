@@ -101,7 +101,7 @@ export const PoolDetails = () => {
           />
           <Pagination
             currentPage={currentPage}
-            totalCount={pool.swaps.length}
+            totalCount={filteredData.length}
             pageSize={PageSize}
             onPageChange={(page: number) => setCurrentPage(page)}
           />
