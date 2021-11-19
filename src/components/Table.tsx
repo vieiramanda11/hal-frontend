@@ -1,11 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
-import formatNumber from '../utils/formatNumber';
+import { formatNumber, formatDate } from '../utils';
 
 interface ITable {
   data: [];
   headerTitles: string[];
+  isTransaction?: boolean;
 }
 
 interface IToken {
@@ -20,6 +21,13 @@ interface IPool {
   token1: IToken;
 }
 
+interface ITransactions {
+  id: string;
+  txType: string;
+  amountUSD: string;
+  timestamp: any;
+}
+
 interface ITr {
   borderBottom?: boolean;
 }
@@ -30,6 +38,7 @@ interface ITd {
 
 const StyledTable = styled.table`
   width: 100%;
+  background-color: rgb(25, 27, 31);
 `;
 
 const THead = styled.thead`
@@ -71,9 +80,9 @@ const RowLink = styled(Link)`
   }
 `;
 
-export const Table = ({ data, headerTitles }: ITable) => {
+export const Table = ({ data, headerTitles, isTransaction }: ITable) => {
   return (
-    <StyledTable style={{ width: '100%' }}>
+    <StyledTable>
       <THead>
         <TR borderBottom>
           {headerTitles[0] && <Td textAlignLeft>{headerTitles[0]}</Td>}
@@ -85,27 +94,51 @@ export const Table = ({ data, headerTitles }: ITable) => {
         </TR>
       </THead>
       <tbody>
-        {data.map(
-          ({
-            id,
-            txCount,
-            volumeUSD,
-            totalValueLockedUSD,
-            token0,
-            token1,
-          }: IPool) => (
-            <RowLink to={`${id}`}>
-              <TR key={id}>
-                <Td textAlignLeft>{`${token0.symbol}/${token1.symbol}`}</Td>
-                <div>
-                  <Td>{txCount}</Td>
-                  <Td>{`$${formatNumber(totalValueLockedUSD)}m`}</Td>
-                  <Td>{`$${formatNumber(volumeUSD)}m`}</Td>
-                </div>
-              </TR>
-            </RowLink>
-          )
-        )}
+        {isTransaction
+          ? data.map(
+              ({
+                id,
+                txType = 'swap',
+                amountUSD,
+                timestamp,
+              }: ITransactions) => (
+                <TR key={id}>
+                  <Td textAlignLeft>
+                    <a
+                      rel='noreferrer'
+                      href={`https://etherscan.io/tx/${id}`}
+                      target='_blank'
+                    >{`etherscan.io/tx/${id}`}</a>
+                  </Td>
+                  <div>
+                    <Td>{txType}</Td>
+                    <Td>{`$${formatNumber(amountUSD)}m`}</Td>
+                    <Td>{formatDate(timestamp)}</Td>
+                  </div>
+                </TR>
+              )
+            )
+          : data.map(
+              ({
+                id,
+                txCount,
+                volumeUSD,
+                totalValueLockedUSD,
+                token0,
+                token1,
+              }: IPool) => (
+                <RowLink to={`${id}`}>
+                  <TR key={id}>
+                    <Td textAlignLeft>{`${token0.symbol}/${token1.symbol}`}</Td>
+                    <div>
+                      <Td>{txCount}</Td>
+                      <Td>{`$${formatNumber(totalValueLockedUSD)}m`}</Td>
+                      <Td>{`$${formatNumber(volumeUSD)}m`}</Td>
+                    </div>
+                  </TR>
+                </RowLink>
+              )
+            )}
       </tbody>
     </StyledTable>
   );
