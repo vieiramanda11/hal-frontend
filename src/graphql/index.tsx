@@ -33,6 +33,16 @@ export const GET_POOL_DETAILS = gql`
         id
         timestamp
       }
+      mints {
+        amountUSD
+        id
+        timestamp
+      }
+      burns {
+        amountUSD
+        id
+        timestamp
+      }
       txCount
       volumeUSD
       totalValueLockedUSD
