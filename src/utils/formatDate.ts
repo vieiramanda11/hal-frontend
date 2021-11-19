@@ -20,6 +20,6 @@ export const formatDate = (date: any) => {
     value = Math.floor(seconds / 60);
     unit = 'minute';
   }
-  if (value != 1) unit = unit + 's';
+  if (value !== 1) unit = unit + 's';
   return value + ' ' + unit + ' ' + direction;
 };

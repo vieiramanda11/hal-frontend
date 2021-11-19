@@ -7,6 +7,7 @@ interface ITable {
   data: [];
   headerTitles: string[];
   isTransaction?: boolean;
+  txType?: string;
 }
 
 interface IToken {
@@ -80,7 +81,12 @@ const RowLink = styled(Link)`
   }
 `;
 
-export const Table = ({ data, headerTitles, isTransaction }: ITable) => {
+export const Table = ({
+  data,
+  headerTitles,
+  isTransaction,
+  txType,
+}: ITable) => {
   return (
     <StyledTable>
       <THead>
@@ -95,29 +101,22 @@ export const Table = ({ data, headerTitles, isTransaction }: ITable) => {
       </THead>
       <tbody>
         {isTransaction
-          ? data.map(
-              ({
-                id,
-                txType = 'swap',
-                amountUSD,
-                timestamp,
-              }: ITransactions) => (
-                <TR key={id}>
-                  <Td textAlignLeft>
-                    <a
-                      rel='noreferrer'
-                      href={`https://etherscan.io/tx/${id}`}
-                      target='_blank'
-                    >{`etherscan.io/tx/${id}`}</a>
-                  </Td>
-                  <div>
-                    <Td>{txType}</Td>
-                    <Td>{`$${formatNumber(amountUSD)}m`}</Td>
-                    <Td>{formatDate(timestamp)}</Td>
-                  </div>
-                </TR>
-              )
-            )
+          ? data.map(({ id, amountUSD, timestamp }: ITransactions) => (
+              <TR key={id}>
+                <Td textAlignLeft>
+                  <a
+                    rel='noreferrer'
+                    href={`https://etherscan.io/tx/${id}`}
+                    target='_blank'
+                  >{`etherscan.io/tx/${id}`}</a>
+                </Td>
+                <div>
+                  <Td>{txType}</Td>
+                  <Td>{`$${formatNumber(amountUSD)}m`}</Td>
+                  <Td>{formatDate(timestamp)}</Td>
+                </div>
+              </TR>
+            ))
           : data.map(
               ({
                 id,

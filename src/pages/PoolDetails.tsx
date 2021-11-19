@@ -3,7 +3,7 @@ import { GET_POOL_DETAILS } from '../graphql';
 import { useQuery } from '@apollo/client';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Typography, Table, Pagination } from '../components/';
+import { Typography, Table, Pagination, Filter } from '../components/';
 
 const Container = styled.div`
   padding: 20px 50px;
@@ -30,14 +30,16 @@ const BackLink = styled(Link)`
 `;
 
 export const PoolDetails = () => {
-  let PageSize = 10;
+  const [filterDataType, setFilterDataType] = useState('swaps');
+  const [currentPage, setCurrentPage] = useState(1);
 
   const params = useParams();
-  const [currentPage, setCurrentPage] = useState(1);
 
   const { loading, error, data } = useQuery(GET_POOL_DETAILS, {
     variables: { id: params.id },
   });
+
+  let PageSize = 10;
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :</p>;
@@ -45,15 +47,23 @@ export const PoolDetails = () => {
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :{error}</p>;
-  if (pool.swaps.length === 0) return <Typography text='No data available' />;
+
+  const filteredData =
+    (filterDataType === 'swaps' && pool.swaps) ||
+    (filterDataType === 'mints' && pool.mints) ||
+    (filterDataType === 'burns' && pool.burns);
 
   const currentTableData = () => {
     const firstPageIndex = (currentPage - 1) * PageSize;
     const lastPageIndex = firstPageIndex + PageSize;
 
-    if (pool.swaps.length !== 0) {
-      return pool.swaps.slice(firstPageIndex, lastPageIndex);
+    if (filteredData.length !== 0) {
+      return filteredData.slice(firstPageIndex, lastPageIndex);
     }
+  };
+
+  const handleSelect = (event: any) => {
+    setFilterDataType(event.target.value);
   };
 
   return (
@@ -73,24 +83,30 @@ export const PoolDetails = () => {
           <Typography text={pool.txCount} />
         </div>
       </TokensCard>
-      <TransactionContainer>
-        <Table
-          isTransaction
-          data={currentTableData()}
-          headerTitles={[
-            'Link to Ethereum',
-            'TX Type',
-            'Token Amount (USD)',
-            'Timestamp',
-          ]}
-        />
-        <Pagination
-          currentPage={currentPage}
-          totalCount={pool.swaps.length}
-          pageSize={PageSize}
-          onPageChange={(page: number) => setCurrentPage(page)}
-        />
-      </TransactionContainer>
+      <Filter handleSelect={handleSelect} />
+      {filteredData.length === 0 ? (
+        <Typography text='No data available' />
+      ) : (
+        <TransactionContainer>
+          <Table
+            isTransaction
+            data={currentTableData()}
+            txType={filterDataType}
+            headerTitles={[
+              'Link to Ethereum',
+              'TX Type',
+              'Token Amount (USD)',
+              'Timestamp',
+            ]}
+          />
+          <Pagination
+            currentPage={currentPage}
+            totalCount={pool.swaps.length}
+            pageSize={PageSize}
+            onPageChange={(page: number) => setCurrentPage(page)}
+          />
+        </TransactionContainer>
+      )}
     </Container>
   );
 };
