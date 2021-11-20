@@ -3,7 +3,14 @@ import { GET_POOL_DETAILS } from '../graphql';
 import { useQuery } from '@apollo/client';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Typography, Table, Pagination, Filter, Button } from '../components/';
+import {
+  Typography,
+  Table,
+  Pagination,
+  Filter,
+  Button,
+  ActivityIndicator,
+} from '../components/';
 import { WatchlistContext } from '../context/WatchlistContext';
 
 const Container = styled.div`
@@ -44,12 +51,9 @@ export const PoolDetails = () => {
 
   let PageSize = 10;
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <ActivityIndicator />;
   if (error) return <p>Error :</p>;
   const { pool } = data;
-
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p>Error :{error}</p>;
 
   const filteredData =
     (filterDataType === 'swaps' && pool.swaps) ||

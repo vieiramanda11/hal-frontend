@@ -2,7 +2,12 @@ import React, { useState, useContext } from 'react';
 import { GET_POOLS } from '../graphql';
 import { useQuery } from '@apollo/client';
 import styled from 'styled-components';
-import { Typography, Table, Pagination } from '../components/';
+import {
+  Typography,
+  Table,
+  Pagination,
+  ActivityIndicator,
+} from '../components/';
 import { WatchlistContext } from '../context/WatchlistContext';
 
 let PageSize = 10;
@@ -23,7 +28,7 @@ export const Pools = () => {
   const { loading, data, error } = useQuery(GET_POOLS);
   const { watchlist } = useContext(WatchlistContext);
 
-  if (loading) return <p>Loading...</p>;
+  if (loading) return <ActivityIndicator />;
   if (error) return <p>Error :{error}</p>;
 
   const currentTableData = () => {
