@@ -1,5 +1,3 @@
-// @ts-nocheck
-
 import React, { useState, useContext } from 'react';
 import { GET_POOLS } from '../graphql';
 import { useQuery } from '@apollo/client';
@@ -37,7 +35,7 @@ export const Pools = () => {
     }
   };
 
-  console.log(watchlist);
+  const dataWatchlist = watchlist as IPool[];
 
   return (
     <Container>
@@ -46,10 +44,12 @@ export const Pools = () => {
         {watchlist.length === 0 ? (
           <Typography text='Saved pools will appear here' />
         ) : (
-          <Table
-            data={watchlist}
-            headerTitles={['Pools', 'TXCOUNT', 'TVL', 'VOLUME']}
-          />
+          <>
+            <Table
+              data={dataWatchlist}
+              headerTitles={['Pools', 'TXCOUNT', 'TVL', 'VOLUME']}
+            />
+          </>
         )}
       </PoolsContainer>
       <Typography text='All pools' />

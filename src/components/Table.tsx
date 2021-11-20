@@ -2,31 +2,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
 import { formatNumber, formatDate } from '../utils';
-
 interface ITable {
-  data: [];
+  data: IPool[] | ITransactions[];
   headerTitles: string[];
   isTransaction?: boolean;
   txType?: string;
-}
-
-interface IToken {
-  symbol: string;
-}
-interface IPool {
-  id: string;
-  txCount: string;
-  volumeUSD: string;
-  totalValueLockedUSD: string;
-  token0: IToken;
-  token1: IToken;
-}
-
-interface ITransactions {
-  id: string;
-  txType: string;
-  amountUSD: string;
-  timestamp: number;
 }
 
 interface ITr {
@@ -87,6 +67,9 @@ export const Table = ({
   isTransaction,
   txType,
 }: ITable) => {
+  const dataTransaction = data as ITransactions[];
+  const dataPools = data as IPool[];
+
   return (
     <StyledTable>
       <THead>
@@ -101,43 +84,36 @@ export const Table = ({
       </THead>
       <tbody>
         {isTransaction
-          ? data.map(({ id, amountUSD, timestamp }: ITransactions) => (
-              <TR key={id}>
+          ? dataTransaction.map((pool) => (
+              <TR key={pool.id}>
                 <Td textAlignLeft>
                   <a
                     rel='noreferrer'
-                    href={`https://etherscan.io/tx/${id}`}
+                    href={`https://etherscan.io/tx/${pool.id}`}
                     target='_blank'
-                  >{`etherscan.io/tx/${id}`}</a>
+                  >{`etherscan.io/tx/${pool.id}`}</a>
                 </Td>
                 <div>
                   <Td>{txType}</Td>
-                  <Td>{`$${formatNumber(amountUSD)}m`}</Td>
-                  <Td>{formatDate(timestamp)}</Td>
+                  <Td>{`$${formatNumber(pool.amountUSD)}m`}</Td>
+                  <Td>{formatDate(pool.timestamp)}</Td>
                 </div>
               </TR>
             ))
-          : data.map(
-              ({
-                id,
-                txCount,
-                volumeUSD,
-                totalValueLockedUSD,
-                token0,
-                token1,
-              }: IPool) => (
-                <RowLink to={`${id}`}>
-                  <TR key={id}>
-                    <Td textAlignLeft>{`${token0.symbol}/${token1.symbol}`}</Td>
-                    <div>
-                      <Td>{txCount}</Td>
-                      <Td>{`$${formatNumber(totalValueLockedUSD)}m`}</Td>
-                      <Td>{`$${formatNumber(volumeUSD)}m`}</Td>
-                    </div>
-                  </TR>
-                </RowLink>
-              )
-            )}
+          : dataPools.map((pool) => (
+              <RowLink to={`${pool.id}`}>
+                <TR key={pool.id}>
+                  <Td
+                    textAlignLeft
+                  >{`${pool.token0.symbol}/${pool.token1.symbol}`}</Td>
+                  <div>
+                    <Td>{pool.txCount}</Td>
+                    <Td>{`$${formatNumber(pool.totalValueLockedUSD)}m`}</Td>
+                    <Td>{`$${formatNumber(pool.volumeUSD)}m`}</Td>
+                  </div>
+                </TR>
+              </RowLink>
+            ))}
       </tbody>
     </StyledTable>
   );

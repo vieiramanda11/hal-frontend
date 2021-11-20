@@ -1,18 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
 
-export interface IToken {
-  symbol: string;
-}
-
-export interface IPool {
-  id: string;
-  txCount: string;
-  volumeUSD: string;
-  totalValueLockedUSD: string;
-  token0?: IToken;
-  token1?: IToken;
-}
-
 export type WatchlistContextState = {
   watchlist: IPool[];
   addPoolToWatchlist: (pool: IPool) => void;
