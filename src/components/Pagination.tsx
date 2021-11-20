@@ -1,6 +1,8 @@
 import React from 'react';
 import { usePagination } from '../hooks/usePagination';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowRight, faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { Typography } from '.';
 
 interface IPagination {
@@ -15,10 +17,7 @@ const Container = styled.div`
   display: flex;
   width: 100%;
   justify-content: center;
-`;
-
-const StyledTypography = styled(Typography)`
-  font-weight: bold;
+  align-items: center;
 `;
 
 const ButtonContainer = styled.div`
@@ -62,11 +61,17 @@ export const Pagination = ({
   return (
     <Container>
       <ButtonContainer onClick={onPrevious}>
-        <StyledTypography text={'<'} />
+        <FontAwesomeIcon
+          icon={faArrowLeft}
+          color={currentPage === 1 ? 'gray' : 'white'}
+        />
       </ButtonContainer>
-      <StyledTypography text={`Page ${currentPage} of ${lastPage}`} />
+      <Typography text={`Page ${currentPage} of ${lastPage}`} />
       <ButtonContainer onClick={onNext}>
-        <StyledTypography text={'>'} />
+        <FontAwesomeIcon
+          icon={faArrowRight}
+          color={currentPage === lastPage ? 'gray' : 'white'}
+        />
       </ButtonContainer>
     </Container>
   );

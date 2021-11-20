@@ -11,6 +11,8 @@ import {
   Button,
   ActivityIndicator,
 } from '../components/';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft } from '@fortawesome/free-solid-svg-icons';
 import { WatchlistContext } from '../context/WatchlistContext';
 
 const Container = styled.div`
@@ -35,6 +37,13 @@ const TokensCard = styled.div`
 
 const BackLink = styled(Link)`
   text-decoration: none;
+  display: flex;
+  align-items: center;
+`;
+
+const LeftIcon = styled(FontAwesomeIcon)`
+  margin-right: 10px;
+  color: rgb(195, 197, 203);
 `;
 
 export const PoolDetails = () => {
@@ -103,18 +112,23 @@ export const PoolDetails = () => {
   return (
     <Container>
       <BackLink to='/pools'>
-        <Typography text='< Back to pools' />
+        <LeftIcon icon={faArrowLeft} />
+        <Typography text='Back to pools' />
       </BackLink>
-      <h3>{`${pool.token0.symbol}/${pool.token1.symbol}`}</h3>
+      <Typography
+        text={`${pool.token0.symbol}/${pool.token1.symbol}`}
+        bold
+        color='white'
+      />
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <TokensCard>
           <div>
-            <Typography text='Tokens value (USD)' />
+            <Typography text='Tokens value (USD)' bold color='white' />
             <Typography text={pool.token0.symbol} />
             <Typography text={pool.token1.symbol} />
           </div>
           <div>
-            <Typography text='TX Count' />
+            <Typography text='TX Count' bold color='white' />
             <Typography text={pool.txCount} />
           </div>
         </TokensCard>
