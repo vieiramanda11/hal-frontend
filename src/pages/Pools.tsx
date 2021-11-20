@@ -1,8 +1,11 @@
-import React, { useState } from 'react';
+// @ts-nocheck
+
+import React, { useState, useContext } from 'react';
 import { GET_POOLS } from '../graphql';
 import { useQuery } from '@apollo/client';
 import styled from 'styled-components';
 import { Typography, Table, Pagination } from '../components/';
+import { WatchlistContext } from '../context/WatchlistContext';
 
 let PageSize = 10;
 
@@ -20,6 +23,7 @@ const PoolsContainer = styled.div`
 export const Pools = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { loading, data, error } = useQuery(GET_POOLS);
+  const { watchlist } = useContext(WatchlistContext);
 
   if (loading) return <p>Loading...</p>;
   if (error) return <p>Error :{error}</p>;
@@ -33,11 +37,20 @@ export const Pools = () => {
     }
   };
 
+  console.log(watchlist);
+
   return (
     <Container>
       <Typography text='Pool watchlist' />
       <PoolsContainer>
-        <Typography text='Saved pools will appear here' />
+        {watchlist.length === 0 ? (
+          <Typography text='Saved pools will appear here' />
+        ) : (
+          <Table
+            data={watchlist}
+            headerTitles={['Pools', 'TXCOUNT', 'TVL', 'VOLUME']}
+          />
+        )}
       </PoolsContainer>
       <Typography text='All pools' />
 

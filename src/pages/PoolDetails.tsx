@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { GET_POOL_DETAILS } from '../graphql';
 import { useQuery } from '@apollo/client';
 import { useParams, Link } from 'react-router-dom';
 import styled from 'styled-components';
-import { Typography, Table, Pagination, Filter } from '../components/';
+import { Typography, Table, Pagination, Filter, Button } from '../components/';
+import { WatchlistContext } from '../context/WatchlistContext';
 
 const Container = styled.div`
   padding: 20px 50px;
@@ -32,6 +33,8 @@ const BackLink = styled(Link)`
 export const PoolDetails = () => {
   const [filterDataType, setFilterDataType] = useState('swaps');
   const [currentPage, setCurrentPage] = useState(1);
+  const { addPoolToWatchlist, watchlist, removePoolFromWatchlist } =
+    useContext(WatchlistContext);
 
   const params = useParams();
 
@@ -66,23 +69,61 @@ export const PoolDetails = () => {
     setFilterDataType(event.target.value);
   };
 
+  const addPool = () => {
+    const newPool = {
+      id: pool.id,
+      txCount: pool.txCount,
+      volumeUSD: pool.volumeUSD,
+      totalValueLockedUSD: pool.totalValueLockedUSD,
+      token0: {
+        symbol: pool.token0.symbol,
+      },
+      token1: {
+        symbol: pool.token1.symbol,
+      },
+    };
+
+    addPoolToWatchlist(newPool);
+  };
+
+  const deletePool = (id: string) => {
+    removePoolFromWatchlist(id);
+  };
+
+  const isOnWatchlist = (id: string) => {
+    return watchlist.find((pool) => {
+      if (pool.id === id) return true;
+    });
+  };
+
   return (
     <Container>
       <BackLink to='/pools'>
         <Typography text='< Back to pools' />
       </BackLink>
       <h3>{`${pool.token0.symbol}/${pool.token1.symbol}`}</h3>
-      <TokensCard>
-        <div>
-          <Typography text='Tokens value (USD)' />
-          <Typography text={pool.token0.symbol} />
-          <Typography text={pool.token1.symbol} />
-        </div>
-        <div>
-          <Typography text='TX Count' />
-          <Typography text={pool.txCount} />
-        </div>
-      </TokensCard>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <TokensCard>
+          <div>
+            <Typography text='Tokens value (USD)' />
+            <Typography text={pool.token0.symbol} />
+            <Typography text={pool.token1.symbol} />
+          </div>
+          <div>
+            <Typography text='TX Count' />
+            <Typography text={pool.txCount} />
+          </div>
+        </TokensCard>
+        {isOnWatchlist(pool.id) ? (
+          <Button
+            onClick={() => deletePool(pool.id)}
+            text='Remove pool from watchlist'
+          />
+        ) : (
+          <Button onClick={addPool} text='Add poll to watchlist' />
+        )}
+      </div>
+
       <Filter handleSelect={handleSelect} />
       {filteredData.length === 0 ? (
         <Typography text='No data available' />
